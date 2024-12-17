@@ -1,16 +1,15 @@
 import { Request, Response } from "express";
 import { signUpSchema } from "../schemas/signup";
 import { signinSchema } from "../schemas/signin";
-import { findUserByEmail } from "../services/user";
-import {hashSync} from 'bcrypt';
+import { createUser, findUserByEmail } from "../services/user";
+import { hashSync } from 'bcrypt';
+
 export const signin = async (req: Request, res: Response) => {
     const safeData = signinSchema.safeParse(req.body);
     if (!safeData.success) {
         res.json({ error: safeData.error.flatten().fieldErrors });
         return;
     }
-
-
 }
 
 export const signup = async (req: Request, res: Response) => {
@@ -22,11 +21,19 @@ export const signup = async (req: Request, res: Response) => {
 
     const hasEmail = await findUserByEmail(safeData.data.email);
 
-    if(hasEmail){
-       res.json({error: 'E-mail já existe!'});
-       return;
+    if (hasEmail) {
+        res.json({ error: 'E-mail já existe!' });
+        return;
     }
 
     const hasPassword = await hashSync(safeData.data.password, 10);
-    res.json(hasPassword);
- }
+
+    const newUser = await createUser({
+        slug: safeData.data.name,
+        name: safeData.data.name,
+        email: safeData.data.email,
+        password: hasPassword
+    });
+
+    res.json(newUser);
+}
