@@ -2,7 +2,8 @@ import { Request, Response } from "express";
 import { signUpSchema } from "../schemas/signup";
 import { signinSchema } from "../schemas/signin";
 import { createUser, findUserByEmail } from "../services/user";
-import { hashSync } from 'bcrypt';
+import { hashSync, compare } from 'bcrypt';
+import { createJwt } from "../utils/jwt";
 
 export const signin = async (req: Request, res: Response) => {
     const safeData = signinSchema.safeParse(req.body);
@@ -17,7 +18,19 @@ export const signin = async (req: Request, res: Response) => {
         res.status(401).json({ error: 'Acesso negado' });
         return;
     } 
-    res.json({});
+    const verifyPass = await compare(safeData.data.password, user.password);
+    if(verifyPass){
+      res.status(401).json({error: 'Acesso negado'});
+    }
+    const token = await createJwt(user.slug)
+    res.json({
+        token,
+        user:{
+            name: user.name,
+            slug: user.slug,
+            avatar: user.avatar
+        }
+    });
 }
 
 export const signup = async (req: Request, res: Response) => {
@@ -42,6 +55,5 @@ export const signup = async (req: Request, res: Response) => {
         email: safeData.data.email,
         password: hasPassword
     });
-
     res.json(newUser);
 }
