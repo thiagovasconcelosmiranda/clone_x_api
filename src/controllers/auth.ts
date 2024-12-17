@@ -6,10 +6,18 @@ import { hashSync } from 'bcrypt';
 
 export const signin = async (req: Request, res: Response) => {
     const safeData = signinSchema.safeParse(req.body);
+
     if (!safeData.success) {
         res.json({ error: safeData.error.flatten().fieldErrors });
         return;
     }
+    
+    const user = await findUserByEmail(safeData.data.email);
+    if (!user) {
+        res.status(401).json({ error: 'Acesso negado' });
+        return;
+    } 
+    res.json({});
 }
 
 export const signup = async (req: Request, res: Response) => {
