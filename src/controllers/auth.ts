@@ -10,7 +10,8 @@ export const signin = async (req: Request, res: Response) => {
         res.json({ error: safeData.error.flatten().fieldErrors });
         return;
     }
-   
+
+
 }
 
 export const signup = async (req: Request, res: Response) => {
@@ -27,6 +28,9 @@ export const signup = async (req: Request, res: Response) => {
     }
     let genSlug = true;
     //const userSlug = slug(safeData.data.name);
+
+    res.json(hasEmail);
+
     
     
  }
