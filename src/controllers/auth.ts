@@ -52,7 +52,7 @@ export const signup = async (req: Request, res: Response) => {
     const hasPassword = await hashSync(safeData.data.password, 10);
 
     const newUser = await createUser({
-        slug: 'teste',
+        slug: safeData.data.name,
         name: safeData.data.name,
         email: safeData.data.email,
         password: hasPassword
@@ -64,7 +64,7 @@ export const signup = async (req: Request, res: Response) => {
     res.status(201).json({
         token,
         user: {
-            name: newUser?.name,
+            name: 'name',
             slug: newUser?.slug,
             avatar: newUser?.avatar
         }
