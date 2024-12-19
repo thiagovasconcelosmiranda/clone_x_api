@@ -3,6 +3,36 @@ import { prisma } from "../utils/prisma";
 import fs, { mkdirSync } from "fs";
 //import { getPublicUrl } from "../utils/url";
 
+export const findTweet = async (id: number) => {
+    const tweet = await prisma.tweet.findFirst({
+        include: {
+            user: {
+                select: {
+                    name: true,
+                    avatar: true,
+                    slug: true
+                }
+            },
+            likes: {
+                select: {
+                    userSlug: true
+                }
+            },
+            answers: {
+                select: {
+                    body: true,
+                    image: true,
+                    user: true,
+                    id: true,
+                    createAt: true
+                }
+            }
+        },
+        where: { id }
+    });
+    return tweet;
+}
+
 export const createTweet = async (slug: string, body: string, answer?: number, image?: any) => {
     const dirname = path.join(__dirname, '../../public/posts/');
     var nameImage = null;
@@ -53,7 +83,84 @@ export const findAnswersTweet = async (id: number) => {
         },
         where: { answerOf: id }
     });
-
-
     return tweets;
 }
+
+export const createAnswers = async (body: string, image: any, userSlug: string, tweetId: number) => {
+    const dirname = path.join(__dirname, '../../public/answers/');
+
+    let nameImage = null;
+    if (image) {
+        nameImage = image.name;
+    }
+
+    const answer = await prisma.answer.create({
+        data: {
+            body,
+            image: nameImage,
+            userSlug,
+            tweetId
+        }
+    });
+    if (image !== null) {
+        if (!fs.existsSync(dirname + userSlug)) {
+            mkdirSync(dirname + userSlug);
+        }
+
+        if (fs.existsSync(dirname + userSlug)) {
+            mkdirSync(dirname + userSlug + '/' + answer.id);
+        }
+        image.mv(dirname + userSlug + '/' + answer.id + '/' + image.name);
+    }
+
+    return answer;
+
+}
+
+export const findTweetsByUser = async (slug: string, currentPage: number, perPage: number) => {
+    const countTweet = await prisma.tweet.count({
+        where: {
+            userSlug: slug
+        }
+    });
+
+    const tweets = await prisma.tweet.findMany({
+        include: {
+            user: {
+                select: {
+                    name: true,
+                    avatar: true,
+                    slug: true
+                }
+            },
+            likes: {
+                select: {
+                    userSlug: true
+                }
+            },
+            answers: {
+                select: {
+                    body: true,
+                    image: true,
+                    user: true,
+                    tweetId: true,
+                    answerLikes: true
+                }
+            }
+        },
+        where: { userSlug: slug, answerOf: 0 },
+        orderBy: { createAt: 'desc' },
+        skip: currentPage * perPage,
+        take: perPage
+    });
+
+    for (let tweetIndex in tweets) {
+       
+    }
+    const tweet = [
+        tweets,
+        countTweet
+    ]
+    return tweet;
+}
+

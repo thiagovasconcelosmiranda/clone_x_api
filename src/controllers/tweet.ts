@@ -1,7 +1,18 @@
 import { Response } from "express";
 import { ExtendedRequest } from "../types/extended-request";
 import { addTweetSchema } from "../schemas/addTweet";
-import { createTweet, findAnswersTweet } from "../services/tweet";
+import { createAnswers, createTweet, findAnswersTweet, findTweet } from "../services/tweet";
+import { AddAnswerSchema } from "../schemas/addAnswer";
+
+export const getTweet = async (req: ExtendedRequest, res: Response) => {
+    const { id } = req.params;
+    const tweet = await findTweet(parseInt(id));
+    if (!tweet){
+        res.json({ error: 'Tweet inexistente' });
+      return;
+    } 
+    res.json(tweet);
+}
 
 export const addTweet = async (req: ExtendedRequest, res: Response) => {
     const safeData = addTweetSchema.safeParse(req.body);
@@ -29,4 +40,28 @@ export const getAnswers = async (req: ExtendedRequest, res: Response) => {
     const { id } = req.params;
     const answers = await findAnswersTweet(parseInt(id));
     res.json({ answers: answers });
+}
+
+export const addAnswers = async (req: ExtendedRequest, res: Response) => {
+    const { id } = req.params;
+    const safeData = AddAnswerSchema.safeParse(req.body);
+
+    if (!safeData.success) {
+        res.json({ error: safeData.error.flatten().fieldErrors });
+        return;
+    }
+    let file = null;
+
+    if (req.files) {
+        file = req.files.image;
+    }
+
+    const answer = await createAnswers(
+        req.body.body,
+        file,
+        req.userSlug as string,
+        parseInt(id)
+    )
+
+    res.json(answer);
 }
