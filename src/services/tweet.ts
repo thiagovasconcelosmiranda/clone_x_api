@@ -164,3 +164,90 @@ export const findTweetsByUser = async (slug: string, currentPage: number, perPag
     return tweet;
 }
 
+export const countTweetFeed = async (following: any) => {
+    let count = 0;
+    for (let followIndex in following) {
+        const countTweet = await prisma.tweet.count({
+            where: { userSlug: following[followIndex] }
+        })
+        count += countTweet
+    }
+    return count;
+}
+
+export const findTweetFeed = async (following: any, currentPage: number, perPage: number) => {
+    const tweets = await prisma.tweet.findMany({
+        include: {
+            user: {
+                select: {
+                    name: true,
+                    avatar: true,
+                    slug: true
+                }
+            },
+            likes: {
+                select: {
+                    userSlug: true
+                }
+            },
+            answers: {
+                select: {
+                    id: true,
+                    body: true,
+                    image: true,
+                    user: true,
+                    answerLikes: true
+                }
+            }
+        },
+
+        where: {
+            userSlug: { in: following },
+            answerOf: 0
+        },
+        orderBy: { createAt: 'desc' },
+        skip: currentPage * perPage,
+        take: perPage
+    });
+
+    for (let tweetIndex in tweets) {
+        //tweets[tweetIndex].user.avatar = getPublicUrl(tweets[tweetIndex].user.avatar, 'avatars', tweets[tweetIndex].user.slug);
+
+        for (let answerIndex in tweets[tweetIndex].answers) {
+            //tweets[tweetIndex].answers[answerIndex].user.avatar = getPublicUrl(tweets[tweetIndex].answers[answerIndex].user.avatar, 'avatars', tweets[tweetIndex].answers[answerIndex].user.slug);
+
+           // if (tweets[tweetIndex].answers[answerIndex].image) {
+                //tweets[tweetIndex].answers[answerIndex].image = getPublicUrl(tweets[tweetIndex].answers[answerIndex].image, '', tweets[tweetIndex].answers[answerIndex].user.slug);
+           // }
+        }
+    }
+    return tweets;
+}
+
+export const checkIfAnswerIsByUser = async (slug: string, id: number) => {
+    const isLiked = await prisma.answerLike.findFirst({
+        where: {
+            userSlug: slug,
+            answerId: id
+        }
+    });
+    return isLiked ? true : false;
+}
+
+export const unlikeTweet = async (slug: string, id: number) => {
+    await prisma.tweetLike.deleteMany({
+        where: {
+            userSlug: slug,
+            tweetId: id
+        }
+    })
+}
+
+export const likeTweet = async (slug: string, id: number) => {
+    await prisma.tweetLike.create({
+        data: {
+            userSlug: slug,
+            tweetId: id
+        }
+    });
+}

@@ -1,7 +1,7 @@
 import { Response } from "express";
 import { ExtendedRequest } from "../types/extended-request";
 import { addTweetSchema } from "../schemas/addTweet";
-import { createAnswers, createTweet, findAnswersTweet, findTweet } from "../services/tweet";
+import { createAnswers, createTweet, findAnswersTweet, findTweet, checkIfAnswerIsByUser, unlikeTweet, likeTweet } from "../services/tweet";
 import { AddAnswerSchema } from "../schemas/addAnswer";
 
 export const getTweet = async (req: ExtendedRequest, res: Response) => {
@@ -64,4 +64,30 @@ export const addAnswers = async (req: ExtendedRequest, res: Response) => {
     )
 
     res.json(answer);
+}
+
+export const likeToggle = async (req: ExtendedRequest, res: Response) => {
+    const { id } = req.params;
+
+    const liked = await checkIfAnswerIsByUser(
+        req.userSlug as string,
+        parseInt(id)
+    )
+    let like: boolean = false;
+
+    if (liked) {
+        unlikeTweet(
+            req.userSlug as string,
+            parseInt(id)
+        );
+        like = false;
+
+    } else {
+        likeTweet(
+            req.userSlug as string,
+            parseInt(id)
+        );
+        like = true;
+    }
+    res.json({ like: like });
 }
