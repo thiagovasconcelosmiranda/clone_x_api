@@ -13,6 +13,7 @@ export const getUser = async (req: ExtendedRequest, res: Response) => {
         res.json({ error: 'Usuario inexistente' });
         return;
     }
+    
     res.json({ user });
 }
 export const getUserTweet = async (req: ExtendedRequest, res: Response) => {
