@@ -103,4 +103,8 @@ export const getUserSuggestions = async (slug: string) => {
   return suggestions;
 }
 
+export const updateUserInfo = async (slug: string, data: Prisma.UserUpdateInput) => {
+
+}
+
 

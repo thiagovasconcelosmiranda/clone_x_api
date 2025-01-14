@@ -7,7 +7,7 @@ import { countTweetFeed, findTweetFeed } from "../services/tweet";
 export const getFeed = async (req: ExtendedRequest, res: Response) => {
     const safeData = feedSchema.safeParse(req.query);
     if (!safeData.success) {
-         res.json({ error: safeData.error.flatten().fieldErrors });
+        res.json({ error: safeData.error.flatten().fieldErrors });
         return;
     }
     let perPage = 4;
@@ -16,5 +16,5 @@ export const getFeed = async (req: ExtendedRequest, res: Response) => {
     const countTweet = await countTweetFeed(following);
 
     const tweets = await findTweetFeed(following, currentPage, perPage);
-    res.json({ tweets, page: currentPage, countTweet, perPage, following});
+    res.json({ tweets, page: currentPage, countTweet, perPage, following });
 }

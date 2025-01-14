@@ -1,8 +1,9 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import { ExtendedRequest } from "../types/extended-request";
-import { findUserBySlug } from "../services/user";
+import { findUserBySlug, updateUserInfo } from "../services/user";
 import { userTweetsSchema } from "../schemas/userTweets";
 import { findTweetsByUser } from "../services/tweet";
+import { updateUserSchema } from "../schemas/update-user";
 
 export const getUser = async (req: ExtendedRequest, res: Response) => {
     const { slug } = req.params;
@@ -32,5 +33,19 @@ export const getUserTweet = async (req: ExtendedRequest, res: Response) => {
     );
     res.json({tweets: tweets[0], page: currentPage, countTweet: tweets[1], perPage: perPage});
     
-    //res.json({ tweets: tweets[0], page: currentPage, countTweet: tweets[1], perPage: perPage });
+}
+
+
+export const updateUser = async (req: ExtendedRequest, res: Response) => {
+    const safeData = updateUserSchema.safeParse(req.body);
+
+    if (!safeData.success) {
+         res.json({ error: safeData.error.flatten().fieldErrors });
+         return;
+    }
+    await updateUserInfo(
+        req.userSlug as string,
+        safeData.data
+    )
+    res.json({});  
 }
