@@ -7,6 +7,7 @@ import * as feedController from '../controllers/feed';
 import * as trendController from '../controllers/trend';
 import * as suggestionController from '../controllers/suggestion';
 import * as searchController from '../controllers/search';
+//import * as searchController from '../controllers/search';
 import { verifyJwt } from "../utils/jwt";
 
 export const router = Router();
@@ -25,6 +26,7 @@ router.get('/user/:slug', verifyJwt, userController.getUser);
 router.get('/user/:slug/tweets', verifyJwt, userController.getUserTweet);
 router.post('/tweet/:id/like', verifyJwt, tweetController.likeToggle);
 router.put('/user', verifyJwt, userController.updateUser);
+router.post('/user/:slug/follow', verifyJwt, userController.followToggle);
 
 router.get('/feed', verifyJwt, feedController.getFeed);
 router.get('/search', verifyJwt, searchController.searchTweets);

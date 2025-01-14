@@ -39,7 +39,6 @@ export const findUserBySlug = async (slug: string) => {
     }
   }
   return null;
-
 }
 
 export const createUser = async (data: Prisma.UserCreateInput) => {
@@ -105,6 +104,25 @@ export const getUserSuggestions = async (slug: string) => {
 
 export const updateUserInfo = async (slug: string, data: Prisma.UserUpdateInput) => {
 
+}
+
+export const checkIfFollows = async (userSlug: string, user2Slug: string) => {
+  const follows = await prisma.follow.findFirst({
+    where: { userSlug, user2Slug }
+  });
+  return follows ? true : false;
+}
+
+export const follow = async ( userSlug: string, user2Slug: string) => {
+  await prisma.follow.create({
+    data: { userSlug, user2Slug }
+  });
+}
+
+export const unfollow = async (userSlug: string, user2Slug: string) => {
+  await prisma.follow.deleteMany({
+    where: { userSlug, user2Slug }
+  });
 }
 
 

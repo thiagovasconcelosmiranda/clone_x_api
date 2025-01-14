@@ -10,5 +10,4 @@ app.use(cors());
 app.use(express.urlencoded({extended: false}));
 app.use(express.static('public'));
 app.use(router);
-
 app.listen(port, () => console.log(`Server http://localhost:${port}`));
