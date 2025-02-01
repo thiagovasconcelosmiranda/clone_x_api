@@ -19,8 +19,8 @@ model User {
   email    String      @unique
   password String
   name     String
-  avatar   String      @default("default.jpg")
-  cover    String      @default("default.jpg")
+  avatar   String      @default("default.png")
+  cover    String      @default("cover.jfif")
   bio      String?
   link     String?
   tweets   Tweet[]
