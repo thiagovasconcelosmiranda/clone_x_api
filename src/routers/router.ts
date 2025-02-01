@@ -31,3 +31,4 @@ router.get('/feed', verifyJwt, feedController.getFeed);
 router.get('/search', verifyJwt, searchController.searchTweets);
 router.get('/trending', verifyJwt, trendController.getTrend);
 router.get('/suggestions', verifyJwt, suggestionController.getSuggestions);
+router.get('/avatar', );

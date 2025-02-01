@@ -1,8 +1,6 @@
 import path from "path";
 import { prisma } from "../utils/prisma";
 import fs, { mkdirSync } from "fs";
-import exp from "constants";
-//import { getPublicUrl } from "../utils/url";
 
 export const findTweet = async (id: number) => {
     const tweet = await prisma.tweet.findFirst({
