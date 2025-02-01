@@ -7,7 +7,6 @@ import * as feedController from '../controllers/feed';
 import * as trendController from '../controllers/trend';
 import * as suggestionController from '../controllers/suggestion';
 import * as searchController from '../controllers/search';
-//import * as searchController from '../controllers/search';
 import { verifyJwt } from "../utils/jwt";
 
 export const router = Router();
