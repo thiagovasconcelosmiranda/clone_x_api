@@ -1,6 +1,7 @@
 import path from "path";
 import { prisma } from "../utils/prisma";
 import fs, { mkdirSync } from "fs";
+import { getPublicUrl } from "../utils/url";
 
 export const findTweet = async (id: number) => {
     const tweet = await prisma.tweet.findFirst({
@@ -207,13 +208,18 @@ export const findTweetFeed = async (following: string[], currentPage: number, pe
             }
         },
         where: {
-            userSlug: {in: following},
+            userSlug: { in: following },
             answerOf: 0
         },
         orderBy: { createAt: 'desc' },
         skip: currentPage * perPage,
         take: perPage
     });
+
+    for (let tweetIndex in tweets) {
+        tweets[tweetIndex].user.avatar = getPublicUrl(tweets[tweetIndex].user.avatar, 'avatar', tweets[tweetIndex].user.slug)
+    }
+
     return tweets;
 }
 
