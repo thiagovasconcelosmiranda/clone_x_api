@@ -4,8 +4,8 @@ CREATE TABLE "User" (
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "avatar" TEXT NOT NULL DEFAULT 'default.jpg',
-    "cover" TEXT NOT NULL DEFAULT 'default.jpg',
+    "avatar" TEXT NOT NULL DEFAULT 'null',
+    "cover" TEXT NOT NULL DEFAULT 'null',
     "bio" TEXT,
     "link" TEXT,
 

@@ -59,7 +59,12 @@ export const getUserFollower = async (slug: string) => {
     select: {userSlug: true, user2Slug: true},
     where: { user2Slug: slug }
   });
-  return reqFollow;
+  
+  for (let reqItem of reqFollow) {
+    followers.push(reqItem.userSlug);
+   
+  }
+  return followers;
 }
 
 export const getUserFollowing = async (slug: string) => {

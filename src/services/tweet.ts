@@ -35,7 +35,7 @@ export const findTweet = async (id: number) => {
 export const createTweet = async (slug: string, body: string, answer?: number, image?: any) => {
     const dirname = path.join(__dirname, '../../public/posts/');
     var nameImage = null;
-    
+
     if (image !== null) {
         nameImage = image.name;
     }
@@ -154,7 +154,7 @@ export const findTweetsByUser = async (slug: string, currentPage: number, perPag
     });
 
     for (let tweetIndex in tweets) {
-       
+
     }
     const tweet = [
         tweets,
@@ -165,16 +165,23 @@ export const findTweetsByUser = async (slug: string, currentPage: number, perPag
 
 export const countTweetFeed = async (following: any) => {
     let count = 0;
+
     for (let followIndex in following) {
+
         const countTweet = await prisma.tweet.count({
-            where: { userSlug: following[followIndex] }
-        })
-        count += countTweet
+            where: {
+                userSlug: following[followIndex].userSlug
+            }
+        });
+
+        count = + countTweet;
     }
     return count;
 }
 
-export const findTweetFeed = async (following: any, currentPage: number, perPage: number) => {
+export const findTweetFeed = async (following: string[], currentPage: number, perPage: number) => {
+
+
     const tweets = await prisma.tweet.findMany({
         include: {
             user: {
@@ -199,27 +206,14 @@ export const findTweetFeed = async (following: any, currentPage: number, perPage
                 }
             }
         },
-
         where: {
-            userSlug: { in: following },
+            userSlug: {in: following},
             answerOf: 0
         },
         orderBy: { createAt: 'desc' },
         skip: currentPage * perPage,
         take: perPage
     });
-
-    for (let tweetIndex in tweets) {
-        //tweets[tweetIndex].user.avatar = getPublicUrl(tweets[tweetIndex].user.avatar, 'avatars', tweets[tweetIndex].user.slug);
-
-        for (let answerIndex in tweets[tweetIndex].answers) {
-            //tweets[tweetIndex].answers[answerIndex].user.avatar = getPublicUrl(tweets[tweetIndex].answers[answerIndex].user.avatar, 'avatars', tweets[tweetIndex].answers[answerIndex].user.slug);
-
-           // if (tweets[tweetIndex].answers[answerIndex].image) {
-                //tweets[tweetIndex].answers[answerIndex].image = getPublicUrl(tweets[tweetIndex].answers[answerIndex].image, '', tweets[tweetIndex].answers[answerIndex].user.slug);
-           // }
-        }
-    }
     return tweets;
 }
 
