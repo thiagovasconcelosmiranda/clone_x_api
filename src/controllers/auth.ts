@@ -61,7 +61,6 @@ export const signup = async (req: Request, res: Response) => {
     });
 
     const userSlug: string | any = newUser?.name;
-
     const token = createJwt(userSlug);
 
     res.status(201).json({
