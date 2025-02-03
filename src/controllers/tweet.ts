@@ -6,12 +6,14 @@ import { AddAnswerSchema } from "../schemas/addAnswer";
 import { addHashtag } from "../services/trend";
 
 export const getTweet = async (req: ExtendedRequest, res: Response) => {
+
     const { id } = req.params;
     const tweet = await findTweet(parseInt(id));
     if (!tweet){
         res.json({ error: 'Tweet inexistente' });
       return;
     } 
+
     res.json(tweet);
 }
 

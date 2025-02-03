@@ -1,6 +1,6 @@
 import { Response } from "express";
 import { ExtendedRequest } from "../types/extended-request";
-import { checkIfFollows, findUserBySlug, follow, unfollow, updateUserInfo } from "../services/user";
+import { checkIfFollows, findUserBySlug, follow, getUserFollower, getUserFollowersCount, getUserFollowingCount, unfollow, updateUserInfo } from "../services/user";
 import { userTweetsSchema } from "../schemas/userTweets";
 import { findTweetsByUser } from "../services/tweet";
 import { updateUserSchema } from "../schemas/update-user";
@@ -13,8 +13,11 @@ export const getUser = async (req: ExtendedRequest, res: Response) => {
         res.json({ error: 'Usuario inexistente' });
         return;
     }
+    const follows = await getUserFollower(req.userSlug as string);
+    const followingCount = await getUserFollowingCount(req.userSlug as string);
+    const followersCount = await getUserFollowersCount(req.userSlug as string);
     
-    res.json({ user });
+    res.json({ user, followersCount, followingCount, follows});
 }
 export const getUserTweet = async (req: ExtendedRequest, res: Response) => {
     const { slug } = req.params;
