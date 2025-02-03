@@ -3,6 +3,7 @@ import { ExtendedRequest } from "../types/extended-request";
 import { addTweetSchema } from "../schemas/addTweet";
 import { createAnswers, createTweet, findAnswersTweet, findTweet, checkIfAnswerIsByUser, unlikeTweet, likeTweet } from "../services/tweet";
 import { AddAnswerSchema } from "../schemas/addAnswer";
+import { addHashtag } from "../services/trend";
 
 export const getTweet = async (req: ExtendedRequest, res: Response) => {
     const { id } = req.params;
@@ -32,6 +33,15 @@ export const addTweet = async (req: ExtendedRequest, res: Response) => {
         safeData.data.answer ? parseInt(safeData.data.answer) : 0,
         file
     );
+    
+    const hashtags = safeData.data.body.match(/#[a-zA-Z0-r9_]+/g);
+    if(hashtags){
+      for(let hashtag of hashtags){
+         if(hashtag.length >= 2){
+             await addHashtag(hashtag);
+         }
+      }
+    }
 
     res.json(newTweet);
 }
