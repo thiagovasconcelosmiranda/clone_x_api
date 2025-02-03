@@ -12,22 +12,22 @@ export const signin = async (req: Request, res: Response) => {
         res.json({ error: safeData.error.flatten().fieldErrors });
         return;
     }
-    
+
     const user = await findUserByEmail(safeData.data.email);
     if (!user) {
         res.status(401).json({ error: 'Acesso negado' });
         return;
-    } 
+    }
 
     const verifyPass = await compare(safeData.data.password, user.password);
-    if(!verifyPass){
-      res.status(401).json({err: 'Acesso negado'});
-      return;
+    if (!verifyPass) {
+        res.status(401).json({ err: 'Acesso negado' });
+        return;
     }
     const token = await createJwt(user.slug)
     res.json({
         token,
-        user:{
+        user: {
             name: user.name,
             slug: user.slug,
             avatar: user.avatar
@@ -50,13 +50,16 @@ export const signup = async (req: Request, res: Response) => {
     }
 
     const hasPassword = await hashSync(safeData.data.password, 10);
+    
+    let name = safeData.data.name.charAt(0).toUpperCase() + safeData.data.name.slice(1).toLowerCase();
 
     const newUser = await createUser({
-        slug: safeData.data.name,
-        name: safeData.data.name,
+        slug: safeData.data.name.toLowerCase(),
+        name,
         email: safeData.data.email,
         password: hasPassword
     });
+
     const userSlug: string | any = newUser?.name;
 
     const token = createJwt(userSlug);

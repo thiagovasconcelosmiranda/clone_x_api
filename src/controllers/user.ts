@@ -19,6 +19,7 @@ export const getUser = async (req: ExtendedRequest, res: Response) => {
 export const getUserTweet = async (req: ExtendedRequest, res: Response) => {
     const { slug } = req.params;
     const safeData = userTweetsSchema.safeParse(req.query);
+    
     if (!safeData.success) {
         res.json({ error: safeData.error.flatten().fieldErrors });
         return;
@@ -33,7 +34,6 @@ export const getUserTweet = async (req: ExtendedRequest, res: Response) => {
         perPage
     );
     res.json({ tweets: tweets[0], page: currentPage, countTweet: tweets[1], perPage: perPage });
-
 }
 
 export const updateUser = async (req: ExtendedRequest, res: Response) => {
@@ -49,6 +49,7 @@ export const updateUser = async (req: ExtendedRequest, res: Response) => {
     )
     res.json({});
 }
+
 export const followToggle = async (req: ExtendedRequest, res: Response) => {
     const { slug } = req.params;
     const me = req.userSlug as string;
