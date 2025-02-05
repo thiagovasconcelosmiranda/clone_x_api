@@ -26,6 +26,7 @@ router.get('/user/:slug/tweets', verifyJwt, userController.getUserTweet);
 router.post('/tweet/:id/like', verifyJwt, tweetController.likeToggle);
 router.put('/user', verifyJwt, userController.updateUser);
 router.post('/user/:slug/follow', verifyJwt, userController.followToggle);
+router.get('/user/:slug/follow', verifyJwt, userController.followToggle);
 
 router.get('/feed', verifyJwt, feedController.getFeed);
 router.get('/search', verifyJwt, searchController.searchTweets);

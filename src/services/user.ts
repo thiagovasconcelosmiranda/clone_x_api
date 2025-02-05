@@ -84,10 +84,10 @@ export const getUserFollowing = async (slug: string) => {
 }
 
 export const getUserFollow = async (slug: string) => {
-   const follows = await prisma.follow.findMany({
-    where: {userSlug: slug}
-   });
-   return follows
+  const follows = await prisma.follow.findMany({
+    where: { userSlug: slug }
+  });
+  return follows
 }
 
 export const getUserSuggestions = async (slug: string) => {
@@ -103,7 +103,7 @@ export const getUserSuggestions = async (slug: string) => {
 
   const suggestions: Suggestion[] = await prisma.$queryRaw`
    SELECT
-    name, avatar, slug, 
+    name, avatar, slug
     FROM "User"
     WHERE slug NOT IN (${followingPlusMe.join(',')})
     ORDER BY  RANDOM()
@@ -120,7 +120,7 @@ export const getUserSuggestions = async (slug: string) => {
 }
 
 export const updateUserInfo = async (slug: string, data: Prisma.UserUpdateInput) => {
-
+  return slug;
 }
 
 export const checkIfFollows = async (userSlug: string, user2Slug: string) => {
@@ -145,7 +145,7 @@ export const getUserFollowingCount = async (slug: string) => {
   const reqFollow = await prisma.follow.count({
     where: { userSlug: slug }
   });
-  
+
   return reqFollow;
 }
 
