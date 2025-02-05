@@ -154,7 +154,6 @@ export const findTweetsByUser = async (slug: string, currentPage: number, perPag
         take: perPage
     });
 
-
     for (let tweetIndex in tweets) {
         tweets[tweetIndex].user.avatar = getPublicUrl(tweets[tweetIndex].user.avatar, 'avatar', tweets[tweetIndex].user.slug)
     }
@@ -162,7 +161,8 @@ export const findTweetsByUser = async (slug: string, currentPage: number, perPag
     const tweet = [
         tweets,
         countTweet
-    ]
+    ];
+
     return tweet;
 }
 
