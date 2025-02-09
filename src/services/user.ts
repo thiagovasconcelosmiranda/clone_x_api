@@ -59,7 +59,7 @@ export const getUserFollower = async (slug: string) => {
   const followers = [];
   const reqFollow = await prisma.follow.findMany({
     select: { userSlug: true, user2Slug: true },
-    where: { user2Slug: slug }
+    where: { userSlug: slug }
   });
 
   for (let reqItem of reqFollow) {
