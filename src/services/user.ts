@@ -63,7 +63,7 @@ export const getUserFollower = async (slug: string) => {
   });
 
   for (let reqItem of reqFollow) {
-    followers.push(reqItem.userSlug);
+    followers.push(reqItem.user2Slug);
 
   }
   return followers;
