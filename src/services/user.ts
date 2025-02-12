@@ -111,12 +111,10 @@ export const getUserSuggestions = async (slug: string) => {
    `;
 
   for (let sugIndex in suggestions) {
-    if (suggestions[sugIndex].slug != slug) {
-      suggestions[sugIndex].avatar = getPublicUrl(
-        suggestions[sugIndex].avatar,
-        'avatars',
-        suggestions[sugIndex].slug);
-    }
+    suggestions[sugIndex].avatar = getPublicUrl(
+      suggestions[sugIndex].avatar,
+      'avatars',
+      suggestions[sugIndex].slug);
   }
   return suggestions;
 }
