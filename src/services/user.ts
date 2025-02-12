@@ -107,20 +107,22 @@ export const getUserSuggestions = async (slug: string) => {
     FROM "User"
     WHERE slug NOT IN (${followingPlusMe.join(',')})
     ORDER BY  RANDOM()
-    LIMIT 3;
+    LIMIT 4;
    `;
 
   for (let sugIndex in suggestions) {
-    suggestions[sugIndex].avatar = getPublicUrl(
-      suggestions[sugIndex].avatar,
-      'avatars',
-      suggestions[sugIndex].slug);
+    if (suggestions[sugIndex].slug != slug) {
+      suggestions[sugIndex].avatar = getPublicUrl(
+        suggestions[sugIndex].avatar,
+        'avatars',
+        suggestions[sugIndex].slug);
+    }
   }
   return suggestions;
 }
 
 export const updateUserInfo = async (slug: string, data: Prisma.UserUpdateInput) => {
- const user = await prisma.user.update({
+  const user = await prisma.user.update({
     where: { slug },
     data
   });

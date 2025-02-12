@@ -46,7 +46,6 @@ export const updateUser = async (req: ExtendedRequest, res: Response) => {
         res.json({ error: safeData.error.flatten().fieldErrors });
         return;
     }
-    const link = req.body.link ? req.body.link : null;
 
     const user = await updateUserInfo (
         req.userSlug as string,
