@@ -120,7 +120,12 @@ export const getUserSuggestions = async (slug: string) => {
 }
 
 export const updateUserInfo = async (slug: string, data: Prisma.UserUpdateInput) => {
-  return slug;
+ const user = await prisma.user.update({
+    where: { slug },
+    data
+  });
+
+  return user;
 }
 
 export const checkIfFollows = async (userSlug: string, user2Slug: string) => {

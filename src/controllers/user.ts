@@ -16,13 +16,13 @@ export const getUser = async (req: ExtendedRequest, res: Response) => {
     const follows = await getUserFollower(req.userSlug as string);
     const followingCount = await getUserFollowingCount(req.userSlug as string);
     const followersCount = await getUserFollowersCount(req.userSlug as string);
-    
-    res.json({ user, followersCount, followingCount, follows});
+
+    res.json({ user, followersCount, followingCount, follows });
 }
 export const getUserTweet = async (req: ExtendedRequest, res: Response) => {
     const { slug } = req.params;
     const safeData = userTweetsSchema.safeParse(req.query);
-    
+
     if (!safeData.success) {
         res.json({ error: safeData.error.flatten().fieldErrors });
         return;
@@ -46,11 +46,13 @@ export const updateUser = async (req: ExtendedRequest, res: Response) => {
         res.json({ error: safeData.error.flatten().fieldErrors });
         return;
     }
-    await updateUserInfo(
+    const link = req.body.link ? req.body.link : null;
+
+    const user = await updateUserInfo (
         req.userSlug as string,
-        safeData.data
+        safeData.data,
     )
-    res.json({});
+    res.json({ user });
 }
 
 export const followToggle = async (req: ExtendedRequest, res: Response) => {
