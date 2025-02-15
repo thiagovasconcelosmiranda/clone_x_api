@@ -30,6 +30,11 @@ export const findTweet = async (id: number) => {
         },
         where: { id }
     });
+
+    if(tweet?.user.avatar){
+       tweet.user.avatar = getPublicUrl(tweet.user.avatar, "avatar", tweet.user.slug);
+    }
+    
     return tweet;
 }
 
@@ -183,8 +188,6 @@ export const countTweetFeed = async (following: any) => {
 }
 
 export const findTweetFeed = async (following: string[], currentPage: number, perPage: number) => {
-
-
     const tweets = await prisma.tweet.findMany({
         include: {
             user: {
@@ -226,10 +229,10 @@ export const findTweetFeed = async (following: string[], currentPage: number, pe
 }
 
 export const checkIfAnswerIsByUser = async (slug: string, id: number) => {
-    const isLiked = await prisma.answerLike.findFirst({
+    const isLiked = await prisma.tweetLike.findFirst({
         where: {
             userSlug: slug,
-            answerId: id
+            tweetId: id
         }
     });
     return isLiked ? true : false;
@@ -245,7 +248,7 @@ export const unlikeTweet = async (slug: string, id: number) => {
 }
 
 export const likeTweet = async (slug: string, id: number) => {
-    await prisma.tweetLike.create({
+   await prisma.tweetLike.create({
         data: {
             userSlug: slug,
             tweetId: id

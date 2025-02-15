@@ -87,7 +87,7 @@ export const getUserFollow = async (slug: string) => {
   const follows = await prisma.follow.findMany({
     where: { userSlug: slug }
   });
-  return follows
+  return follows;
 }
 
 export const getUserSuggestions = async (slug: string) => {
@@ -95,7 +95,6 @@ export const getUserSuggestions = async (slug: string) => {
 
   const followingPlusMe = await [...following, slug];
 
-  console.log(followingPlusMe);
 
   type Suggestion = Pick<Prisma.UserGetPayload<Prisma.UserDefaultArgs>,
     "name" | "avatar" | "slug"

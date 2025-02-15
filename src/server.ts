@@ -12,4 +12,3 @@ app.use(express.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, '../public')));
 app.use(router);
 app.listen(port, () => console.log(`Server http://localhost:${port}`));
-console.log(path.join(__dirname, '../public'))

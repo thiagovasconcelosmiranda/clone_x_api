@@ -6,13 +6,12 @@ import { AddAnswerSchema } from "../schemas/addAnswer";
 import { addHashtag } from "../services/trend";
 
 export const getTweet = async (req: ExtendedRequest, res: Response) => {
-
     const { id } = req.params;
     const tweet = await findTweet(parseInt(id));
-    if (!tweet){
+    if (!tweet) {
         res.json({ error: 'Tweet inexistente' });
-      return;
-    } 
+        return;
+    }
 
     res.json(tweet);
 }
@@ -35,16 +34,15 @@ export const addTweet = async (req: ExtendedRequest, res: Response) => {
         safeData.data.answer ? parseInt(safeData.data.answer) : 0,
         file
     );
-    
-    const hashtags = safeData.data.body.match(/#[a-zA-Z0-r9_]+/g);
-    if(hashtags){
-      for(let hashtag of hashtags){
-         if(hashtag.length >= 2){
-             await addHashtag(hashtag);
-         }
-      }
-    }
 
+    const hashtags = safeData.data.body.match(/#[a-zA-Z0-r9_]+/g);
+    if (hashtags) {
+        for (let hashtag of hashtags) {
+            if (hashtag.length >= 2) {
+                await addHashtag(hashtag);
+            }
+        }
+    }
     res.json(newTweet);
 }
 
@@ -85,6 +83,7 @@ export const likeToggle = async (req: ExtendedRequest, res: Response) => {
         req.userSlug as string,
         parseInt(id)
     )
+
     let like: boolean = false;
 
     if (liked) {
@@ -93,7 +92,6 @@ export const likeToggle = async (req: ExtendedRequest, res: Response) => {
             parseInt(id)
         );
         like = false;
-
     } else {
         likeTweet(
             req.userSlug as string,
