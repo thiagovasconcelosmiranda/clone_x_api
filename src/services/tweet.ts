@@ -31,10 +31,19 @@ export const findTweet = async (id: number) => {
         where: { id }
     });
 
-    if(tweet?.user.avatar){
-       tweet.user.avatar = getPublicUrl(tweet.user.avatar, "avatar", tweet.user.slug);
+    if (tweet?.user.avatar) {
+        tweet.user.avatar = getPublicUrl(tweet.user.avatar, "avatar", tweet.user.slug);
     }
-    
+
+    if (tweet?.answers.length) {
+        for (let answerIndex in tweet?.answers) {
+            tweet.answers[answerIndex].user.avatar = getPublicUrl(
+                tweet.answers[answerIndex].user.avatar,
+                'avatar',
+                tweet.answers[answerIndex].user.slug
+            )
+        }
+    }
     return tweet;
 }
 
@@ -65,9 +74,7 @@ export const createTweet = async (slug: string, body: string, answer?: number, i
 
         image.mv(dirname + slug + '/' + newTweet.id + '/' + image.name);
     }
-
     return newTweet;
-
 }
 
 export const findAnswersTweet = async (id: number) => {
@@ -162,7 +169,7 @@ export const findTweetsByUser = async (slug: string, currentPage: number, perPag
     for (let tweetIndex in tweets) {
         tweets[tweetIndex].user.avatar = getPublicUrl(tweets[tweetIndex].user.avatar, 'avatar', tweets[tweetIndex].user.slug)
     }
-    
+
     const tweet = [
         tweets,
         countTweet
@@ -248,7 +255,7 @@ export const unlikeTweet = async (slug: string, id: number) => {
 }
 
 export const likeTweet = async (slug: string, id: number) => {
-   await prisma.tweetLike.create({
+    await prisma.tweetLike.create({
         data: {
             userSlug: slug,
             tweetId: id
